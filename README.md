@@ -1,3 +1,6 @@
+## 自定义请求
+
+```js
 import { useState, useEffect } from 'react'
 
 /**
@@ -10,18 +13,14 @@ function useFetch(url, fetcher) {
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false)
 
-  let fn = () => {};
-  if(typeof fetcher === 'function') {
-    fn = fetcher
-  }
-
   useEffect(() => {
     const fetchData = async () => {
       setIsError(false)
       setIsLoading(true)
 
       try {
-        const newData = await fn(url);
+        // 这里直接调用外部传进来的 fetcher
+        const newData = await fetcher(url);
         setData(newData)
       } catch(error) {
         setIsError(false)
@@ -37,3 +36,11 @@ function useFetch(url, fetcher) {
 }
 
 export default useFetch;
+
+```
+
+
+## 问题
+
+1. 第二个参数 fetcher 是可以选的，但是如果只传递第一个参数貌似没什么含义？
+2. 如何处理 initState 的问题？

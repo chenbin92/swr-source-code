@@ -1,10 +1,11 @@
 import React from 'react'
 import Link from 'next/link'
+import fetch from '../../libs/fetch'
 import useFetch from '../../libs/useFetch'
 
 export default () => {
   const id = typeof window !== 'undefined' ? window.location.pathname.slice(1) : ''
-  const [data, isLoading, isError] = useFetch(`/api/data?id=${id}`, [])
+  const [data, isLoading, isError] = useFetch(`/api/data?id=${id}`, fetch)
 
   return (
     <div style={{ textAlign: 'center' }}>
@@ -13,9 +14,9 @@ export default () => {
       {
         isLoading ? 'loading...' :
         <div>
-          <p>forks: {data.forks_count}</p>
-          <p>stars: {data.stargazers_count}</p>
-          <p>watchers: {data.watchers}</p>
+          <p>forks: {data && data.forks_count}</p>
+          <p>stars: {data && data.stargazers_count}</p>
+          <p>watchers: {data && data.watchers}</p>
         </div>
       }
       <br />

@@ -1,11 +1,13 @@
 import React from 'react'
 import Link from 'next/link'
 import Head from 'next/head'
+import fetch from '../libs/fetch'
 import useFetch from '../libs/useFetch'
 import Nav from '../components/nav'
 
 const Home = () => {
-  const [data, isLoading, isError] = useFetch('api/data', []);
+  const [data, isLoading, isError] = useFetch('api/data', fetch);
+  console.log({data, isLoading, isError})
 
   return (
     <div>
@@ -22,7 +24,7 @@ const Home = () => {
         <div>
           {
             isLoading ? 'loading...' :
-            data.map(project =>
+            data && data.map(project =>
               <p key={project}><Link href='/[user]/[repo]' as={`/${project}`}><a>{project}</a></Link></p>
             )
           }
