@@ -1,30 +1,11 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import Link from 'next/link'
 import Head from 'next/head'
-import fetch from '../libs/fetch'
+import useFetch from '../libs/useFetch'
 import Nav from '../components/nav'
 
 const Home = () => {
-  const [data, setData] = useState([])
-  const [isLoading, setIsLoading] = useState(false)
-  const [isError, setIsError] = useState(false)
-
-  useEffect(() => {
-    const fetchData = async () => {
-      setIsLoading(true)
-
-      try {
-        const result = await fetch('api/data')
-        setData(result)
-      } catch(error) {
-        setIsError(true)
-      }
-
-      setIsLoading(false)
-    }
-
-    fetchData()
-  }, [])
+  const [data, isLoading, isError] = useFetch('api/data', []);
 
   return (
     <div>

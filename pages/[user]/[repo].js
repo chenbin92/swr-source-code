@@ -1,30 +1,10 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import Link from 'next/link'
-import fetch from '../../libs/fetch'
+import useFetch from '../../libs/useFetch'
 
 export default () => {
   const id = typeof window !== 'undefined' ? window.location.pathname.slice(1) : ''
-  const [data, setData] = useState([])
-  const [isLoading, setIsLoading] = useState(false)
-  const [isError, setIsError] = useState(false)
-
-  useEffect(() => {
-    const fetchData = async () => {
-      setIsError(false);
-      setIsLoading(true)
-
-      try {
-        const result = await fetch(`/api/data?id=${id}`)
-        setData(result)
-      } catch(error) {
-        setIsError(true)
-      }
-
-      setIsLoading(false)
-    }
-
-    fetchData()
-  }, [id])
+  const [data, isLoading, isError] = useFetch(`/api/data?id=${id}`, [])
 
   return (
     <div style={{ textAlign: 'center' }}>
