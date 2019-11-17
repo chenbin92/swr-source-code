@@ -1,12 +1,11 @@
 import React from 'react'
 import Link from 'next/link'
 import Head from 'next/head'
-import fetch from '../libs/fetch'
 import useFetch from '../libs/useFetch'
 import Nav from '../components/nav'
 
 const Home = () => {
-  const [data, isLoading, isError] = useFetch('api/data', fetch);
+  const [data, isLoading, isError] = useFetch('api/data');
   console.log({data, isLoading, isError})
 
   return (

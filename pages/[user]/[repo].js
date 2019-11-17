@@ -1,11 +1,10 @@
 import React from 'react'
 import Link from 'next/link'
-import fetch from '../../libs/fetch'
 import useFetch from '../../libs/useFetch'
 
 export default () => {
   const id = typeof window !== 'undefined' ? window.location.pathname.slice(1) : ''
-  const [data, isLoading, isError] = useFetch(`/api/data?id=${id}`, fetch)
+  const [data, isLoading, isError] = useFetch(`/api/data?id=${id}`)
 
   return (
     <div style={{ textAlign: 'center' }}>
