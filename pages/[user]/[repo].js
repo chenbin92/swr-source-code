@@ -4,7 +4,7 @@ import useFetch from '../../libs/useFetch'
 
 export default () => {
   const id = typeof window !== 'undefined' ? window.location.pathname.slice(1) : ''
-  const [data, isLoading, isError] = useFetch(`/api/data?id=${id}`)
+  const {data, isLoading, isError} = useFetch(`/api/data?id=${id}`)
 
   return (
     <div style={{ textAlign: 'center' }}>

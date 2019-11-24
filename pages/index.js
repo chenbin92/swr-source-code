@@ -5,8 +5,16 @@ import useFetch from '../libs/useFetch'
 import Nav from '../components/nav'
 
 const Home = () => {
-  const [data, isLoading, isError] = useFetch('api/data');
-  console.log({data, isLoading, isError})
+  const {data, isLoading,isError} = useFetch('api/data', undefined, {
+    initialData: [],
+    onSuccess: (...args) => console.log('onSuccess:', args),
+  })
+  const {data: repo} = useFetch(() => `/api/data?id=${data[0]}`, undefined, {
+    loadingTimeout: 3000,
+    onLoadingSlow: (...args) => console.log('onLoadingSlow:', args),
+    onSuccess: (...args) => console.log('onSuccess:', args),
+    onError: (...args) => console.log('onError:', args)
+  })
 
   return (
     <div>
@@ -23,11 +31,22 @@ const Home = () => {
         <div>
           {
             isLoading ? 'loading...' :
-            data && data.map(project =>
+            data.map(project =>
               <p key={project}><Link href='/[user]/[repo]' as={`/${project}`}><a>{project}</a></Link></p>
             )
           }
         </div>
+
+        {
+          repo ?
+          <div className='detail'>
+            <h4>{repo.full_name}</h4>
+            <p>forks: {repo.forks_count}</p>
+            <p>stars: {repo.stargazers_count}</p>
+            <p>watchers: {repo.watchers}</p>
+          </div>
+          : null
+        }
       </div>
 
       <style jsx>{`
