@@ -4,14 +4,14 @@ import useFetch from '../../libs/useFetch'
 
 export default () => {
   const id = typeof window !== 'undefined' ? window.location.pathname.slice(1) : ''
-  const {data, isLoading, isError} = useFetch(`/api/data?id=${id}`)
+  const {data, isValidating, isError} = useFetch(`/api/data?id=${id}`)
 
   return (
     <div style={{ textAlign: 'center' }}>
       <h1>{id}</h1>
       {isError && <div>Something went wrong ...</div>}
       {
-        isLoading ? 'loading...' :
+        isValidating ? 'loading...' :
         <div>
           <p>forks: {data && data.forks_count}</p>
           <p>stars: {data && data.stargazers_count}</p>

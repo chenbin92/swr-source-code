@@ -5,7 +5,6 @@ const projects = [
 ]
 
 export default (req, res) => {
-  console.log('id===>:', req.query.id);
   if (req.query.id) {
     // a slow endpoint for getting repo data
     fetch(`https://api.github.com/repos/${req.query.id}`)

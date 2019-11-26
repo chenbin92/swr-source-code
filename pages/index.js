@@ -5,7 +5,7 @@ import useFetch from '../libs/useFetch'
 import Nav from '../components/nav'
 
 const Home = () => {
-  const {data, isLoading,isError} = useFetch('api/data', undefined, {
+  const {data = [], isValidating,isError} = useFetch('api/data', undefined, {
     initialData: [],
     onSuccess: (...args) => console.log('onSuccess:', args),
   })
@@ -30,7 +30,7 @@ const Home = () => {
         {isError && <div>Something went wrong ...</div>}
         <div>
           {
-            isLoading ? 'loading...' :
+            isValidating ? 'loading...' :
             data.map(project =>
               <p key={project}><Link href='/[user]/[repo]' as={`/${project}`}><a>{project}</a></Link></p>
             )
