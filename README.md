@@ -23,7 +23,7 @@
 <a name="shOmB"></a>
 ## 需求场景
 
-随着 React Hooks 的浪潮，各种基于 Hooks 的方案越来越多，其中主要包含 **状态管理**、**数据请求**、**通用功能的封装 **等等。而 **数据请求** 是日常业务开发中最常见的需求，那么在  Hooks 模式下，我们应该如何请求数据，先来看下面的一个简单示例。
+随着 React Hooks 的浪潮，各种基于 Hooks 的方案越来越多，其中主要包含 **状态管理**、**数据请求**、**通用功能的封装**等等。而 **数据请求** 是日常业务开发中最常见的需求，那么在 Hooks 模式下，我们应该如何请求数据，先来看下面的一个简单示例。
 
 **产品需求**：首页通过接口获取 github trending 项目列表，然后点击列表项可查看单个项目的信息。
 
@@ -64,10 +64,10 @@ const Home = () => {
             {
             	isLoading ? 'loading...' :
             	data.map(project =>
-    						<p key={project}><Link href='/[user]/[repo]' as={`/${project}`}><a>{project}</a></Link></p>
-        			)
-        		}
-    		</div>
+    		    <p key={project}><Link href='/[user]/[repo]' as={`/${project}`}><a>{project}</a></Link></p>
+        	)
+            }
+    	</div>
     </div>
   )
 }
@@ -102,21 +102,21 @@ const project = () => {
 }
 ```
 
-如上面的例子所示，代码看上去很简洁，一个纯函数包含了数据请求时的请求状态、容错处理、数据更新，视图渲染，以及使用了 React 的 `useEffect` 和 `useState`  两个 Hooks API，很好的满足了场景需求。
+如上面的例子所示，代码看上去很简洁，一个纯函数包含了数据请求时的请求状态、容错处理、数据更新，视图渲染，以及使用了 React 的 `useEffect` 和 `useState` 两个 Hooks API，很好的满足了场景需求。
 
-这看上去很好，但你可能存在一些疑惑，从示例代码可以看到获取项目列表和项目详情的 **数据请求部分的代码 **基本上是一样的，同样的代码重复写两遍，这显然是不能接受的，基于此通常的做法是对其进行一层抽象封装，实现逻辑的复用，具体如下。
+这看上去很好，但你可能存在一些疑惑，从示例代码可以看到获取项目列表和项目详情的 **数据请求部分的代码** 基本上是一样的，同样的代码重复写两遍，这显然是不能接受的，基于此通常的做法是对其进行一层抽象封装，实现逻辑的复用，具体如下。
 
 <a name="4dBya"></a>
 ## 简易模型
 
-基于重复的数据请求代码，对比发现只是 API 和初始数据值的不同，其他如设置 `data` ， `isLoading` ， `isError` 的逻辑都是一样，可以先将其进行一层抽象封装以便进行复用，简易模型如下：
+基于重复的数据请求代码，对比发现只是 API 和初始数据值的不同，其他如设置 `data`，`isLoading`，`isError` 的逻辑都是一样，可以先将其进行一层抽象封装以便进行复用，简易模型如下：
 
 ```jsx
 import { useState, useEffect } from 'react'
 import fetch from 'isomorphic-unfetch'
 
 /**
- * 对 fetch 进行封并返回 isLoading、isError、data 三个值
+ * 对 fetch 进行封装并返回 isLoading、isError、data 三个值
  * @param {*} url 请求的 API 地址
  * @param {*} initialData 初始化数据
  */
@@ -152,7 +152,7 @@ export default useFetch;
 ```
 <a name="RgpD4"></a>
 ### 
-然后修改我们的业务代码如下，这时视图层只需要一行代码即可完成数据的请求，并返回了 `data` 、 `isLoading` 、 `isError` 三个值，渲染处理逻辑完全一致。
+然后修改我们的业务代码如下，这时视图层只需要一行代码即可完成数据的请求，并返回了 `data`、`isLoading`、`isError` 三个值，渲染处理逻辑完全一致。
 
 ```jsx
 // 首页列表实现
@@ -174,7 +174,7 @@ const project = () => {
 }
 ```
 
-至此我们的 useFetch API 形式如下，接收 `url`  和 `initialData`  作为参数，返回 `data` 、 `isLoading` 、 `isError`  三个值。
+至此我们的 useFetch API 形式如下，接收 `url` 和 `initialData` 作为参数，返回 `data`、`isLoading`、`isError` 三个值。
 
 ![image.png](https://img.alicdn.com/tfs/TB1fJruokL0gK0jSZFxXXXWHVXa-1138-186.png)
 
@@ -186,7 +186,7 @@ const project = () => {
 <a name="mevks"></a>
 ### 自定义请求
 
-上面实现的 useFetch 是将 fetch 的实现逻辑进行了内置，且默认使用了 `isomorphic-unfetch` 这个库，在实际业务中，你可能习惯了使用 axios，也可能需要对 fetch 的逻辑进行定制，那么现有的 useFetch 显然就不能满足要求，这时我们可以考虑将 fetch 逻辑通过参数的形式进行传入，外层可以自定义获取数据的行为，如果不传递则默认为 `undefined` 。
+上面实现的 useFetch 是将 fetch 的实现逻辑进行了内置，且默认使用了 `isomorphic-unfetch` 这个库，在实际业务中，你可能习惯了使用 axios，也可能需要对 fetch 的逻辑进行定制，那么现有的 useFetch 显然就不能满足要求，这时我们可以考虑将 fetch 逻辑通过参数的形式进行传入，外层可以自定义获取数据的行为，如果不传递则默认为 `undefined`。
 
 ```javascript
 import { useState, useEffect } from 'react'
@@ -509,7 +509,7 @@ promise.then(() => {
 });
 ```
 
-**useCallback**<br />**<br />对事件句柄进行缓存，如 useState 的第二个返回值是更新函数 setState，但是每次都是返回新的，使用 useCallback 可以让它使用上次的函数。useCallback 接收内联回调函数以及依赖项数组作为参数，该回调函数仅在某个依赖项改变时才会更新。
+**useCallback**<br />对事件句柄进行缓存，如 useState 的第二个返回值是更新函数 setState，但是每次都是返回新的，使用 useCallback 可以让它使用上次的函数。useCallback 接收内联回调函数以及依赖项数组作为参数，该回调函数仅在某个依赖项改变时才会更新。
 
 ```javascript
 const memoizedCallback = useCallback(
@@ -522,20 +522,20 @@ const memoizedCallback = useCallback(
 );
 ```
 
-到这里 `useFetch`  的 API 形式如下，已经支持传入请求的 `url` 、自定义的 `fetcher` 、以及一些可选的配置项。 
+到这里 `useFetch`  的 API 形式如下，已经支持传入请求的 `url`、自定义的 `fetcher`、以及一些可选的配置项。 
 
 ![image.png](https://img.alicdn.com/tfs/TB14avroXT7gK0jSZFpXXaTkpXa-1238-366.png)
 
 <a name="Gk33E"></a>
 ### 聚焦验证
 
-React 团队在前不久的 React Conf 上发布了关于 `Concurrent`  模式的实验性文档，如果说 React Hooks 目的是提高开发体验，那么 `Concurrent`  模式则专注于提升用户体验。同样对于一个基于 React Hook 的请求库而言，除了提供强大的功能之外，提升用户体验也是需要考虑的能力之一。
+React 团队在前不久的 React Conf 上发布了关于 `Concurrent`  模式的实验性文档，如果说 React Hooks 目的是提高开发体验，那么 `Concurrent` 模式则专注于提升用户体验。同样对于一个基于 React Hook 的请求库而言，除了提供强大的功能之外，提升用户体验也是需要考虑的能力之一。
 
-`stale-while-revalidate`  是 HTTP 的缓存策略值之一，其核心就是**允许客户端先使用缓存中不新鲜的数据**，**然后在后台异步重新验证更新缓存**，等下次使用的时候数据就是新鲜的了，旨在通过缓存提高用户体验。
+`stale-while-revalidate` 是 HTTP 的缓存策略值之一，其核心就是**允许客户端先使用缓存中不新鲜的数据**，**然后在后台异步重新验证更新缓存**，等下次使用的时候数据就是新鲜的了，旨在通过缓存提高用户体验。
 
 ![image.png](https://img.alicdn.com/tfs/TB157zsokP2gK0jSZPxXXacQpXa-1492-747.png)<br />如上图所示，在 `useFetch` 中也可以借鉴这种缓存机制，如在请求之前先从缓存返回数据（stale），然后在异步发送请求，最后当数据返回时更新缓存并触发 UI 的重新渲染，从而提高用户体验。这里以鼠标聚焦页面时先从缓存获取数据然后异步请求更新为例，来看看具体的实现。
 
-基于上面的分析，我们首先需要将所有请求的数据结果在内存中进行缓存，来模拟 stale-while-revalidate 的缓存效果，可以利用 ES6 的 `new Map()` 来实现，以 `{[key]: [value]}`  的形式记录请求的数据结果，设计如下：
+基于上面的分析，我们首先需要将所有请求的数据结果在内存中进行缓存，来模拟 stale-while-revalidate 的缓存效果，可以利用 ES6 的 `new Map()` 来实现，以 `{[key]: [value]}` 的形式记录请求的数据结果，设计如下：
 
 ```javascript
 const __cache = new Map()
@@ -553,7 +553,7 @@ function cacheClear() {
 }
 ```
 
-同时，需要记录异步请求的集合，用来根据不同的 `key`  触发对应的验证函数， 以  `{[key]: [revalidate]}` 的形式进行记录请求集合，设计如下：
+同时，需要记录异步请求的集合，用来根据不同的 `key` 触发对应的验证函数， 以 `{[key]: [revalidate]}` 的形式进行记录请求集合，设计如下：
 
 ```javascript
 // 记录并发的请求函数集合
@@ -567,7 +567,7 @@ const CACHE_REVALIDATORS = {}
 ```
 
 完整的代码实现如下：
-> 基于 `stale-while-revalidate`  的思想, 这里将 `useFetch`  命名为 `useSWR` ，同时将原有的 `isLoading`  命名为 `isValidating` ，将数据请求函数 `fetchData` 命名为 `revalidate` .
+> 基于 `stale-while-revalidate` 的思想, 这里将 `useFetch` 命名为 `useSWR`，同时将原有的 `isLoading` 命名为 `isValidating`，将数据请求函数 `fetchData` 命名为 `revalidate` .
 
 
 ```javascript
@@ -780,7 +780,7 @@ function useSWR(url, fetcher, options = {}) {
 
 相关技术点：
 
-**requestIdleCallback**<br />**<br />在 React 16 实现了新的调度策略(Fiber)，新的调度策略提到的异步、可中断，其实就是基于浏览器的 requestIdleCallback 和 requestAnimationFrame 两个API，在 useSWR 中也是使用了 requestIdleCallback 这个 API，其作用就是在前浏览器处于空闲状态的时候执相对较低的任务，也即传给 requestIdleCallback 的回调函数，可以看到在 useSWR 中验证函数作为 requestIdleCallback 的回调函数，如果有缓存则延迟重新验证，优先使用缓存数据进行渲染。
+**requestIdleCallback**<br />在 React 16 实现了新的调度策略(Fiber)，新的调度策略提到的异步、可中断，其实就是基于浏览器的 requestIdleCallback 和 requestAnimationFrame 两个API，在 useSWR 中也是使用了 requestIdleCallback 这个 API，其作用就是在前浏览器处于空闲状态的时候执相对较低的任务，也即传给 requestIdleCallback 的回调函数，可以看到在 useSWR 中验证函数作为 requestIdleCallback 的回调函数，如果有缓存则延迟重新验证，优先使用缓存数据进行渲染。
 
 ```javascript
 // 触发验证
@@ -796,7 +796,7 @@ if (
 }
 ```
 
-**聚焦验证**<br />**<br />有了上面的分析，聚焦验证就很好实现了，主要是通过判断窗口的可见性来触发验证请求：
+**聚焦验证**<br />有了上面的分析，聚焦验证就很好实现了，主要是通过判断窗口的可见性来触发验证请求：
 
 判断窗口是否可见:
 
@@ -837,7 +837,7 @@ if (typeof window !== 'undefined' && window.addEventListener && !eventsBinded) {
 <a name="oe1e7"></a>
 ### 其他功能
 
-在 useSWR 官网中，可以看到还有其他诸如支持 Interval polling、Suspense Mode、Local Mutation 等的能力，但了解其原理之后我们知道其本质都是通过不同的条件和时机来触发验证进行实现的，这里不再一一分析。另外有趣的是由于 useSWR 是 nextjs 的相关团队出品，其也支持了 SSR 能力，以及做了针对服务端的一些特殊处理，如在 useSWR 中判断是服务端的时候使用的 `useLayoutEffect` ， `Suppense` 模式尽在客户端使用等。
+在 useSWR 官网中，可以看到还有其他诸如支持 Interval polling、Suspense Mode、Local Mutation 等的能力，但了解其原理之后我们知道其本质都是通过不同的条件和时机来触发验证进行实现的，这里不再一一分析。另外有趣的是由于 useSWR 是 nextjs 的相关团队出品，其也支持了 SSR 能力，以及做了针对服务端的一些特殊处理，如在 useSWR 中判断是服务端的时候使用的 `useLayoutEffect`，`Suppense` 模式尽在客户端使用等。
 
 ```javascript
 // React currently throws a warning when using useLayoutEffect on the server.
@@ -871,9 +871,9 @@ if (typeof window !== 'undefined' && window.addEventListener && !eventsBinded) {
 
 通过上面的分析，相比社区的现有请求类库，useSWR 除了提供常见的功能之外，其核心在于借鉴了 `stale-while-revalidate` 缓存的思想，并与 React Hooks 进行结合，优先从缓存中获取数据保证的 UI 的快速渲染， 然后在后台异步重新验证更新缓存，一旦缓存得到更新，利用 setState 的机制又会重新触发 UI 的渲染，这意味着组件将得到一个不断地自动更新的数据流，来确保数据的新鲜性。
 
-另外，更强大的是由于 useSWR 缓存的是所有异步请求的数据，本质上相当于拥有了 Global Store 的能力，间接的提供了一种 **状态管理 **的方案；而事实上，useSWR 除了异步请求数据之外，也可以通过同步的方式往缓存中写入数据，满足组件之间的状态同步需求。目前官方还未将这一能力在其文档释放出来，但 @偏右 已经提交了一个示例 [local-state-sharing](https://github.com/zeit/swr/blob/master/examples/local-state-sharing) 演示其可行性。这意味着在某些场景下，我们也许并不需要诸如 Redux / mobx / unstated-next / icestore/dva/ React Context 等等状态管理库。
+另外，更强大的是由于 useSWR 缓存的是所有异步请求的数据，本质上相当于拥有了 Global Store 的能力，间接的提供了一种 **状态管理** 的方案；而事实上，useSWR 除了异步请求数据之外，也可以通过同步的方式往缓存中写入数据，满足组件之间的状态同步需求。目前官方还未将这一能力在其文档释放出来，但 @偏右 已经提交了一个示例 [local-state-sharing](https://github.com/zeit/swr/blob/master/examples/local-state-sharing) 演示其可行性。这意味着在某些场景下，我们也许并不需要诸如 Redux/mobx/unstated-next/icestore/dva/React Context 等等状态管理库。
 
-在未来，也许我们可以这样玩，将 **数据请求 **和 **状态管理 **合二为一，大致的脑图如下：<br />![image.png](https://img.alicdn.com/tfs/TB1RsfroXT7gK0jSZFpXXaTkpXa-2060-1490.png)
+在未来，也许我们可以这样玩，将 **数据请求** 和 **状态管理** 合二为一，大致的脑图如下：<br />![image.png](https://img.alicdn.com/tfs/TB1RsfroXT7gK0jSZFpXXaTkpXa-2060-1490.png)
 
 <a name="va6qC"></a>
 ## 参考
